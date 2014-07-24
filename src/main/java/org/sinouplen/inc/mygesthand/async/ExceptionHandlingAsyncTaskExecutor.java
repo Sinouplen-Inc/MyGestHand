@@ -1,7 +1,6 @@
 package org.sinouplen.inc.mygesthand.async;
 
-import
-		java.util.concurrent.Callable;
+import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 
 import org.slf4j.Logger;
@@ -43,13 +42,13 @@ public class ExceptionHandlingAsyncTaskExecutor implements AsyncTaskExecutor,
     }
 
     private Runnable createWrappedRunnable(final Runnable task) {
-		return () -> {
-		    try {
-		        task.run();
-		    } catch (Exception e) {
-		        handle(e);
-		    }
-		};
+        return () -> {
+            try {
+                task.run();
+            } catch (Exception e) {
+                handle(e);
+            }
+        };
     }
 
     protected void handle(Exception e) {

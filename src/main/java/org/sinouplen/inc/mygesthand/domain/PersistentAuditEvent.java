@@ -20,11 +20,12 @@ import java.util.Map;
 public class PersistentAuditEvent  {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.TABLE)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "event_id")
-    private long id;
+    private Long id;
 
     @NotNull
+    @Column(nullable = false)
     private String principal;
 
     @Column(name = "event_date")
@@ -40,11 +41,11 @@ public class PersistentAuditEvent  {
     @CollectionTable(name="T_PERSISTENT_AUDIT_EVENT_DATA", joinColumns=@JoinColumn(name="event_id"))
     private Map<String, String> data = new HashMap<>();
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

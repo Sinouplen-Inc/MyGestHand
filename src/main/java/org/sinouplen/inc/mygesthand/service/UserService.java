@@ -8,6 +8,7 @@ import org.sinouplen.inc.mygesthand.repository.PersistentTokenRepository;
 import org.sinouplen.inc.mygesthand.repository.UserRepository;
 import org.sinouplen.inc.mygesthand.security.SecurityUtils;
 import org.sinouplen.inc.mygesthand.service.util.RandomUtil;
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,7 +62,7 @@ public class UserService {
                                       String langKey) {
         User newUser = new User();
         Authority authority = authorityRepository.findOne("ROLE_USER");
-        Set<Authority> authorities = new HashSet<Authority>();
+        Set<Authority> authorities = new HashSet<>();
         String encryptedPassword = passwordEncoder.encode(password);
         newUser.setLogin(login);
         // new user gets initially a generated password
@@ -134,7 +135,7 @@ public class UserService {
      */
     @Scheduled(cron = "0 0 1 * * ?")
     public void removeNotActivatedUsers() {
-        LocalDate now = new LocalDate();
+        DateTime now = new DateTime();
         List<User> users = userRepository.findNotActivatedUsersByCreationDateBefore(now.minusDays(3));
         for (User user : users) {
             log.debug("Deleting not activated user {}", user.getLogin());

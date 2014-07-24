@@ -13,7 +13,6 @@ import org.sinouplen.inc.mygesthand.web.rest.dto.UserDTO;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -41,10 +40,10 @@ public class AccountResource {
 
     private final Logger log = LoggerFactory.getLogger(AccountResource.class);
 
-    @Autowired
+    @Inject
     private ServletContext servletContext;
 
-    @Autowired
+    @Inject
     private ApplicationContext applicationContext;
 
     @Inject
@@ -192,22 +191,22 @@ public class AccountResource {
         String decodedSeries = URLDecoder.decode(series, "UTF-8");
         User user = userRepository.findOne(SecurityUtils.getCurrentLogin());
         if (persistentTokenRepository.findByUser(user).stream()
-	            .filter(persistentToken -> StringUtils.equals(persistentToken.getSeries(), decodedSeries))
-	            .count() > 0) {
+                .filter(persistentToken -> StringUtils.equals(persistentToken.getSeries(), decodedSeries))
+                .count() > 0) {
 
             persistentTokenRepository.delete(decodedSeries);
-	    }
+        }
     }
 
     private String createHtmlContentFromTemplate(final User user, final Locale locale, final HttpServletRequest request,
                                                  final HttpServletResponse response) {
-        Map<String, Object> variables = new HashMap<String, Object>();
+        Map<String, Object> variables = new HashMap<>();
         variables.put("user", user);
         variables.put("baseUrl", request.getScheme() + "://" +   // "http" + "://
                                  request.getServerName() +       // "myhost"
                                  ":" + request.getServerPort());
         IWebContext context = new SpringWebContext(request, response, servletContext,
                 locale, variables, applicationContext);
-        return templateEngine.process(MailService.EMAIL_ACTIVATION_PREFIX + MailService.TEMPLATE_SUFFIX, context);
+        return templateEngine.process("activationEmail", context);
     }
 }

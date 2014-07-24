@@ -6,8 +6,7 @@ var mygesthandJhipsterApp = angular.module('mygesthandJhipsterApp', ['http-auth-
     'ngResource', 'ngRoute', 'ngCookies', 'mygesthandJhipsterAppUtils', 'pascalprecht.translate', 'truncate']);
 
 mygesthandJhipsterApp
-    .config(['$routeProvider', '$httpProvider', '$translateProvider',  'tmhDynamicLocaleProvider', 'USER_ROLES',
-        function ($routeProvider, $httpProvider, $translateProvider, tmhDynamicLocaleProvider, USER_ROLES) {
+    .config(function ($routeProvider, $httpProvider, $translateProvider, tmhDynamicLocaleProvider, USER_ROLES) {
             $routeProvider
                 .when('/register', {
                     templateUrl: 'views/register.html',
@@ -40,14 +39,14 @@ mygesthandJhipsterApp
                     templateUrl: 'views/settings.html',
                     controller: 'SettingsController',
                     access: {
-                        authorizedRoles: [USER_ROLES.all]
+                        authorizedRoles: [USER_ROLES.user]
                     }
                 })
                 .when('/password', {
                     templateUrl: 'views/password.html',
                     controller: 'PasswordController',
                     access: {
-                        authorizedRoles: [USER_ROLES.all]
+                        authorizedRoles: [USER_ROLES.user]
                     }
                 })
                 .when('/sessions', {
@@ -59,12 +58,19 @@ mygesthandJhipsterApp
                         }]
                     },
                     access: {
-                        authorizedRoles: [USER_ROLES.all]
+                        authorizedRoles: [USER_ROLES.user]
                     }
                 })
                 .when('/metrics', {
                     templateUrl: 'views/metrics.html',
                     controller: 'MetricsController',
+                    access: {
+                        authorizedRoles: [USER_ROLES.admin]
+                    }
+                })
+                .when('/health', {
+                    templateUrl: 'views/health.html',
+                    controller: 'HealthController',
                     access: {
                         authorizedRoles: [USER_ROLES.admin]
                     }
@@ -122,9 +128,9 @@ mygesthandJhipsterApp
             tmhDynamicLocaleProvider.localeLocationPattern('bower_components/angular-i18n/angular-locale_{{locale}}.js')
             tmhDynamicLocaleProvider.useCookieStorage('NG_TRANSLATE_LANG_KEY');
             
-        }])
-        .run(['$rootScope', '$location', '$http', 'AuthenticationSharedService', 'Session', 'USER_ROLES',
-            function($rootScope, $location, $http, AuthenticationSharedService, Session, USER_ROLES) {
+        })
+        .run(function($rootScope, $location, $http, AuthenticationSharedService, Session, USER_ROLES) {
+                $rootScope.authenticated = false;
                 $rootScope.$on('$routeChangeStart', function (event, next) {
                     $rootScope.isAuthorized = AuthenticationSharedService.isAuthorized;
                     $rootScope.userRoles = USER_ROLES;
@@ -135,7 +141,12 @@ mygesthandJhipsterApp
                 $rootScope.$on('event:auth-loginConfirmed', function(data) {
                     $rootScope.authenticated = true;
                     if ($location.path() === "/login") {
-                        $location.path('/').replace();
+                        var search = $location.search();
+                        if (search.redirect !== undefined) {
+                            $location.path(search.redirect).search('redirect', null).replace();
+                        } else {
+                            $location.path('/').replace();
+                        }
                     }
                 });
 
@@ -144,8 +155,9 @@ mygesthandJhipsterApp
                     Session.invalidate();
                     $rootScope.authenticated = false;
                     if ($location.path() !== "/" && $location.path() !== "" && $location.path() !== "/register" &&
-                            $location.path() !== "/activate") {
-                        $location.path('/login').replace();
+                            $location.path() !== "/activate" && $location.path() !== "/login") {
+                        var redirect = $location.path();
+                        $location.path('/login').search('redirect', redirect).replace();
                     }
                 });
 
@@ -159,4 +171,4 @@ mygesthandJhipsterApp
                 $rootScope.$on('event:auth-loginCancelled', function() {
                     $location.path('');
                 });
-        }]);
+        });

@@ -2,44 +2,45 @@
 
 /* Controllers */
 
-mygesthandJhipsterApp.controller('MainController', ['$scope',
-    function ($scope) {
-    }]);
+mygesthandJhipsterApp.controller('MainController', function ($scope) {
+    });
 
-mygesthandJhipsterApp.controller('AdminController', ['$scope',
-    function ($scope) {
-    }]);
+mygesthandJhipsterApp.controller('AdminController', function ($scope) {
+    });
 
-mygesthandJhipsterApp.controller('LanguageController', ['$scope', '$translate',
-    function ($scope, $translate) {
+mygesthandJhipsterApp.controller('LanguageController', function ($scope, $translate, LanguageService) {
         $scope.changeLanguage = function (languageKey) {
             $translate.use(languageKey);
+
+            LanguageService.getBy(languageKey).then(function(languages) {
+                $scope.languages = languages;
+            });
         };
-    }]);
 
-mygesthandJhipsterApp.controller('MenuController', ['$scope',
-    function ($scope) {
-    }]);
+        LanguageService.getBy().then(function (languages) {
+            $scope.languages = languages;
+        });
+    });
 
-mygesthandJhipsterApp.controller('LoginController', ['$scope', '$location', 'AuthenticationSharedService',
-    function ($scope, $location, AuthenticationSharedService) {
+mygesthandJhipsterApp.controller('MenuController', function ($scope) {
+    });
+
+mygesthandJhipsterApp.controller('LoginController', function ($scope, $location, AuthenticationSharedService) {
         $scope.rememberMe = true;
         $scope.login = function () {
             AuthenticationSharedService.login({
                 username: $scope.username,
                 password: $scope.password,
                 rememberMe: $scope.rememberMe
-            })
+            });
         }
-    }]);
+    });
 
-mygesthandJhipsterApp.controller('LogoutController', ['$location', 'AuthenticationSharedService',
-    function ($location, AuthenticationSharedService) {
+mygesthandJhipsterApp.controller('LogoutController', function ($location, AuthenticationSharedService) {
         AuthenticationSharedService.logout();
-    }]);
+    });
 
-mygesthandJhipsterApp.controller('SettingsController', ['$scope', 'Account',
-    function ($scope, Account) {
+mygesthandJhipsterApp.controller('SettingsController', function ($scope, Account) {
         $scope.success = null;
         $scope.error = null;
         $scope.settingsAccount = Account.get();
@@ -56,10 +57,9 @@ mygesthandJhipsterApp.controller('SettingsController', ['$scope', 'Account',
                     $scope.error = "ERROR";
                 });
         };
-    }]);
+    });
 
-mygesthandJhipsterApp.controller('RegisterController', ['$scope', '$translate', 'Register',
-    function ($scope, $translate, Register) {
+mygesthandJhipsterApp.controller('RegisterController', function ($scope, $translate, Register) {
         $scope.success = null;
         $scope.error = null;
         $scope.doNotMatch = null;
@@ -89,10 +89,9 @@ mygesthandJhipsterApp.controller('RegisterController', ['$scope', '$translate', 
                     });
             }
         }
-    }]);
+    });
 
-mygesthandJhipsterApp.controller('ActivationController', ['$scope', '$routeParams', 'Activate',
-    function ($scope, $routeParams, Activate) {
+mygesthandJhipsterApp.controller('ActivationController', function ($scope, $routeParams, Activate) {
         Activate.get({key: $routeParams.key},
             function (value, responseHeaders) {
                 $scope.error = null;
@@ -102,10 +101,9 @@ mygesthandJhipsterApp.controller('ActivationController', ['$scope', '$routeParam
                 $scope.success = null;
                 $scope.error = "ERROR";
             });
-    }]);
+    });
 
-mygesthandJhipsterApp.controller('PasswordController', ['$scope', 'Password',
-    function ($scope, Password) {
+mygesthandJhipsterApp.controller('PasswordController', function ($scope, Password) {
         $scope.success = null;
         $scope.error = null;
         $scope.doNotMatch = null;
@@ -125,10 +123,9 @@ mygesthandJhipsterApp.controller('PasswordController', ['$scope', 'Password',
                     });
             }
         };
-    }]);
+    });
 
-mygesthandJhipsterApp.controller('SessionsController', ['$scope', 'resolvedSessions', 'Sessions',
-    function ($scope, resolvedSessions, Sessions) {
+mygesthandJhipsterApp.controller('SessionsController', function ($scope, resolvedSessions, Sessions) {
         $scope.success = null;
         $scope.error = null;
         $scope.sessions = resolvedSessions;
@@ -144,42 +141,70 @@ mygesthandJhipsterApp.controller('SessionsController', ['$scope', 'resolvedSessi
                     $scope.error = "ERROR";
                 });
         };
-    }]);
+    });
 
- mygesthandJhipsterApp.controller('MetricsController', ['$scope', 'MetricsService', 'HealthCheckService', 'ThreadDumpService',
-    function ($scope, MetricsService, HealthCheckService, ThreadDumpService) {
+ mygesthandJhipsterApp.controller('HealthController', function ($scope, HealthCheckService) {
+     $scope.updatingHealth = true;
+
+     $scope.refresh = function() {
+         $scope.updatingHealth = true;
+         HealthCheckService.check().then(function(promise) {
+             $scope.healthCheck = promise;
+             $scope.updatingHealth = false;
+         },function(promise) {
+             $scope.healthCheck = promise.data;
+             $scope.updatingHealth = false;
+         });
+     }
+
+     $scope.refresh();
+
+     $scope.getLabelClass = function(statusState) {
+         if (statusState == 'UP') {
+             return "label-success";
+         } else {
+             return "label-danger";
+         }
+     }
+ });
+
+mygesthandJhipsterApp.controller('MetricsController', function ($scope, MetricsService, HealthCheckService, ThreadDumpService) {
+        $scope.metrics = {};
+		$scope.updatingMetrics = true;
 
         $scope.refresh = function() {
-            HealthCheckService.check().then(function(data) {
-                $scope.healthCheck = data;
-            });
-
-            $scope.metrics = MetricsService.get();
-
-            $scope.metrics.$get({}, function(items) {
-
-                $scope.servicesStats = {};
-                $scope.cachesStats = {};
-                angular.forEach(items.timers, function(value, key) {
-                    if (key.indexOf("web.rest") != -1 || key.indexOf("service") != -1) {
-                        $scope.servicesStats[key] = value;
-                    }
-
-                    if (key.indexOf("net.sf.ehcache.Cache") != -1) {
-                        // remove gets or puts
-                        var index = key.lastIndexOf(".");
-                        var newKey = key.substr(0, index);
-
-                        // Keep the name of the domain
-                        index = newKey.lastIndexOf(".");
-                        $scope.cachesStats[newKey] = {
-                            'name': newKey.substr(index + 1),
-                            'value': value
-                        };
-                    }
-                });
-            });
+			$scope.updatingMetrics = true;
+			MetricsService.get().then(function(promise) {
+        		$scope.metrics = promise;
+				$scope.updatingMetrics = false;
+        	},function(promise) {
+        		$scope.metrics = promise.data;
+				$scope.updatingMetrics = false;
+        	});
         };
+
+		$scope.$watch('metrics', function(newValue, oldValue) {
+			$scope.servicesStats = {};
+            $scope.cachesStats = {};
+            angular.forEach(newValue.timers, function(value, key) {
+                if (key.indexOf("web.rest") != -1 || key.indexOf("service") != -1) {
+                    $scope.servicesStats[key] = value;
+                }
+
+                if (key.indexOf("net.sf.ehcache.Cache") != -1) {
+                    // remove gets or puts
+                    var index = key.lastIndexOf(".");
+                    var newKey = key.substr(0, index);
+
+                    // Keep the name of the domain
+                    index = newKey.lastIndexOf(".");
+                    $scope.cachesStats[newKey] = {
+                        'name': newKey.substr(index + 1),
+                        'value': value
+                    };
+                };
+            });
+		});
 
         $scope.refresh();
 
@@ -221,10 +246,9 @@ mygesthandJhipsterApp.controller('SessionsController', ['$scope', 'resolvedSessi
                 return "label-danger";
             }
         };
-    }]);
+    });
 
-mygesthandJhipsterApp.controller('LogsController', ['$scope', 'resolvedLogs', 'LogsService',
-    function ($scope, resolvedLogs, LogsService) {
+mygesthandJhipsterApp.controller('LogsController', function ($scope, resolvedLogs, LogsService) {
         $scope.loggers = resolvedLogs;
 
         $scope.changeLevel = function (name, level) {
@@ -232,10 +256,9 @@ mygesthandJhipsterApp.controller('LogsController', ['$scope', 'resolvedLogs', 'L
                 $scope.loggers = LogsService.findAll();
             });
         }
-    }]);
+    });
 
-mygesthandJhipsterApp.controller('AuditsController', ['$scope', '$translate', '$filter', 'AuditsService',
-    function ($scope, $translate, $filter, AuditsService) {
+mygesthandJhipsterApp.controller('AuditsController', function ($scope, $translate, $filter, AuditsService) {
         $scope.onChangeDate = function() {
             AuditsService.findByDates($scope.fromDate, $scope.toDate).then(function(data){
                 $scope.audits = data;
@@ -264,9 +287,8 @@ mygesthandJhipsterApp.controller('AuditsController', ['$scope', '$translate', '$
 
         $scope.today();
         $scope.previousMonth();
-        
+
         AuditsService.findByDates($scope.fromDate, $scope.toDate).then(function(data){
             $scope.audits = data;
         });
-    }]);
-
+    });

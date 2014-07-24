@@ -2,47 +2,63 @@
 
 /* Services */
 
-mygesthandJhipsterApp.factory('Register', ['$resource',
-    function ($resource) {
+mygesthandJhipsterApp.factory('LanguageService', function ($http, $translate, LANGUAGES) {
+        return {
+            getBy: function(language) {
+                if (language == undefined) {
+                    language = $translate.storage().get('NG_TRANSLATE_LANG_KEY');
+                }
+                if (language == undefined) {
+                    language = 'en';
+                }
+
+                var promise =  $http.get('i18n/' + language + '.json').then(function(response) {
+                    return LANGUAGES;
+                });
+                return promise;
+            }
+        };
+    });
+
+mygesthandJhipsterApp.factory('Register', function ($resource) {
         return $resource('app/rest/register', {}, {
         });
-    }]);
+    });
 
-mygesthandJhipsterApp.factory('Activate', ['$resource',
-    function ($resource) {
+mygesthandJhipsterApp.factory('Activate', function ($resource) {
         return $resource('app/rest/activate', {}, {
             'get': { method: 'GET', params: {}, isArray: false}
         });
-    }]);
+    });
 
-mygesthandJhipsterApp.factory('Account', ['$resource',
-    function ($resource) {
+mygesthandJhipsterApp.factory('Account', function ($resource) {
         return $resource('app/rest/account', {}, {
         });
-    }]);
+    });
 
-mygesthandJhipsterApp.factory('Password', ['$resource',
-    function ($resource) {
+mygesthandJhipsterApp.factory('Password', function ($resource) {
         return $resource('app/rest/account/change_password', {}, {
         });
-    }]);
+    });
 
-mygesthandJhipsterApp.factory('Sessions', ['$resource',
-    function ($resource) {
+mygesthandJhipsterApp.factory('Sessions', function ($resource) {
         return $resource('app/rest/account/sessions/:series', {}, {
             'get': { method: 'GET', isArray: true}
         });
-    }]);
+    });
 
-mygesthandJhipsterApp.factory('MetricsService', ['$resource',
-    function ($resource) {
-        return $resource('metrics/metrics', {}, {
-            'get': { method: 'GET'}
-        });
-    }]);
+mygesthandJhipsterApp.factory('MetricsService',function ($http) {
+    		return {
+            get: function() {
+                var promise = $http.get('metrics/metrics').then(function(response){
+                    return response.data;
+                });
+                return promise;
+            }
+        };
+    });
 
-mygesthandJhipsterApp.factory('ThreadDumpService', ['$http',
-    function ($http) {
+mygesthandJhipsterApp.factory('ThreadDumpService', function ($http) {
         return {
             dump: function() {
                 var promise = $http.get('dump').then(function(response){
@@ -51,10 +67,9 @@ mygesthandJhipsterApp.factory('ThreadDumpService', ['$http',
                 return promise;
             }
         };
-    }]);
+    });
 
-mygesthandJhipsterApp.factory('HealthCheckService', ['$rootScope', '$http',
-    function ($rootScope, $http) {
+mygesthandJhipsterApp.factory('HealthCheckService', function ($rootScope, $http) {
         return {
             check: function() {
                 var promise = $http.get('health').then(function(response){
@@ -63,18 +78,16 @@ mygesthandJhipsterApp.factory('HealthCheckService', ['$rootScope', '$http',
                 return promise;
             }
         };
-    }]);
+    });
 
-mygesthandJhipsterApp.factory('LogsService', ['$resource',
-    function ($resource) {
+mygesthandJhipsterApp.factory('LogsService', function ($resource) {
         return $resource('app/rest/logs', {}, {
             'findAll': { method: 'GET', isArray: true},
             'changeLevel':  { method: 'PUT'}
         });
-    }]);
+    });
 
-mygesthandJhipsterApp.factory('AuditsService', ['$http',
-    function ($http) {
+mygesthandJhipsterApp.factory('AuditsService', function ($http) {
         return {
             findAll: function() {
                 var promise = $http.get('app/rest/audits/all').then(function (response) {
@@ -89,10 +102,9 @@ mygesthandJhipsterApp.factory('AuditsService', ['$http',
                 return promise;
             }
         }
-    }]);
+    });
 
-mygesthandJhipsterApp.factory('Session', [
-    function () {
+mygesthandJhipsterApp.factory('Session', function () {
         this.create = function (login, firstName, lastName, email, userRoles) {
             this.login = login;
             this.firstName = firstName;
@@ -108,19 +120,12 @@ mygesthandJhipsterApp.factory('Session', [
             this.userRoles = null;
         };
         return this;
-    }]);
-
-mygesthandJhipsterApp.constant('USER_ROLES', {
-        all: '*',
-        admin: 'ROLE_ADMIN',
-        user: 'ROLE_USER'
     });
 
-mygesthandJhipsterApp.factory('AuthenticationSharedService', ['$rootScope', '$http', 'authService', 'Session', 'Account',
-    function ($rootScope, $http, authService, Session, Account) {
+mygesthandJhipsterApp.factory('AuthenticationSharedService', function ($rootScope, $http, authService, Session, Account) {
         return {
             login: function (param) {
-                var data ="j_username=" + param.username +"&j_password=" + param.password +"&_spring_security_remember_me=" + param.rememberMe +"&submit=Login";
+                var data ="j_username=" + encodeURIComponent(param.username) +"&j_password=" + encodeURIComponent(param.password) +"&_spring_security_remember_me=" + param.rememberMe +"&submit=Login";
                 $http.post('app/authentication', data, {
                     headers: {
                         "Content-Type": "application/x-www-form-urlencoded"
@@ -139,26 +144,32 @@ mygesthandJhipsterApp.factory('AuthenticationSharedService', ['$rootScope', '$ht
             },
             valid: function (authorizedRoles) {
 
-                $http.get('protected/transparent.gif', {
+                $http.get('protected/authentication_check.gif', {
                     ignoreAuthModule: 'ignoreAuthModule'
                 }).success(function (data, status, headers, config) {
                     if (!Session.login) {
                         Account.get(function(data) {
                             Session.create(data.login, data.firstName, data.lastName, data.email, data.roles);
                             $rootScope.account = Session;
-
                             if (!$rootScope.isAuthorized(authorizedRoles)) {
-                                event.preventDefault();
+                                // user is not allowed
+                               $rootScope.$broadcast("event:auth-notAuthorized");
+                            } else {
+                                $rootScope.$broadcast("event:auth-loginConfirmed");
+                            }
+                        });
+                    }else{
+                        if (!$rootScope.isAuthorized(authorizedRoles)) {
                                 // user is not allowed
                                 $rootScope.$broadcast("event:auth-notAuthorized");
-                            }
-
-                            $rootScope.authenticated = true;
-                        });
+                        } else {
+                                $rootScope.$broadcast("event:auth-loginConfirmed");
+                        }
                     }
-                    $rootScope.authenticated = !!Session.login;
                 }).error(function (data, status, headers, config) {
-                    $rootScope.authenticated = false;
+                    if (!$rootScope.isAuthorized(authorizedRoles)) {
+                        $rootScope.$broadcast('event:auth-loginRequired', data);
+                    }
                 });
             },
             isAuthorized: function (authorizedRoles) {
@@ -192,4 +203,4 @@ mygesthandJhipsterApp.factory('AuthenticationSharedService', ['$rootScope', '$ht
                 authService.loginCancelled();
             }
         };
-    }]);
+    });

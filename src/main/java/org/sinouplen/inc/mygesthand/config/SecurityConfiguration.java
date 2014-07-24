@@ -4,6 +4,7 @@ import org.sinouplen.inc.mygesthand.security.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
+
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.method.configuration.GlobalMethodSecurityConfiguration;
@@ -13,7 +14,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.crypto.password.StandardPasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.RememberMeServices;
 
 import javax.inject.Inject;
@@ -21,7 +22,7 @@ import javax.inject.Inject;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
-    
+
     @Inject
     private Environment env;
 
@@ -39,13 +40,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Inject
     private UserDetailsService userDetailsService;
-    
+
     @Inject
     private RememberMeServices rememberMeServices;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new StandardPasswordEncoder();
+        return new BCryptPasswordEncoder();
     }
 
     @Inject
@@ -64,46 +65,46 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .antMatchers("/scripts/**")
             .antMatchers("/styles/**")
             .antMatchers("/views/**")
+            .antMatchers("/i18n/**")
             .antMatchers("/swagger-ui/**")
             .antMatchers("/console/**");
     }
-    
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
             .exceptionHandling()
-                .authenticationEntryPoint(authenticationEntryPoint)
-                .and()
+            .authenticationEntryPoint(authenticationEntryPoint)
+        .and()
             .rememberMe()
-                .rememberMeServices(rememberMeServices)
-                .key(env.getProperty("jhipster.security.rememberme.key"))
-                .and()
+            .rememberMeServices(rememberMeServices)
+            .key(env.getProperty("jhipster.security.rememberme.key"))
+        .and()
             .formLogin()
-                .loginProcessingUrl("/app/authentication")
-                .successHandler(ajaxAuthenticationSuccessHandler)
-                .failureHandler(ajaxAuthenticationFailureHandler)
-                .usernameParameter("j_username")
-                .passwordParameter("j_password")
-                .permitAll()
-                .and()
+            .loginProcessingUrl("/app/authentication")
+            .successHandler(ajaxAuthenticationSuccessHandler)
+            .failureHandler(ajaxAuthenticationFailureHandler)
+            .usernameParameter("j_username")
+            .passwordParameter("j_password")
+            .permitAll()
+        .and()
             .logout()
-                .logoutUrl("/app/logout")
-                .logoutSuccessHandler(ajaxLogoutSuccessHandler)
-                .deleteCookies("JSESSIONID")
-                .permitAll()
-                .and()
+            .logoutUrl("/app/logout")
+            .logoutSuccessHandler(ajaxLogoutSuccessHandler)
+            .deleteCookies("JSESSIONID")
+            .permitAll()
+        .and()
             .csrf()
-                .disable()
+            .disable()
             .headers()
-                .frameOptions().disable()
+            .frameOptions()
+            .disable()
             .authorizeRequests()
                 .antMatchers("/app/rest/register").permitAll()
                 .antMatchers("/app/rest/activate").permitAll()
                 .antMatchers("/app/rest/authenticate").permitAll()
                 .antMatchers("/app/rest/logs/**").hasAuthority(AuthoritiesConstants.ADMIN)
                 .antMatchers("/app/**").authenticated()
-                .antMatchers("/websocket/tracker").hasAuthority(AuthoritiesConstants.ADMIN)
-                .antMatchers("/websocket/**").permitAll()
                 .antMatchers("/metrics/**").hasAuthority(AuthoritiesConstants.ADMIN)
                 .antMatchers("/health/**").hasAuthority(AuthoritiesConstants.ADMIN)
                 .antMatchers("/trace/**").hasAuthority(AuthoritiesConstants.ADMIN)

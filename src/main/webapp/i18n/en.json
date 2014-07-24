@@ -4,6 +4,9 @@
         "browsehappy": "You are using an <strong>outdated</strong> browser. Please <a href=\"http://browsehappy.com/?locale=en\">upgrade your browser</a> to improve your experience.",
         "menu": {
             "home": "Home",
+            "entities": {
+                "main": "Entities"
+            },
             "account": {
                 "main": "Account",
                 "settings": "Settings",
@@ -11,6 +14,7 @@
                 "sessions": "Sessions",
                 "tracker": "User tracker",
                 "metrics": "Metrics",
+                "health": "Health",
                 "logs": "Logs",
                 "audits": "Audits",
                 "login": "Authenticate",
@@ -20,14 +24,6 @@
             },
             "admin": "Administration",
             "language": "Language"
-        },
-        "language": {
-            "da": "Danish",
-            "en": "English",
-            "fr": "French",
-            "de": "German",
-            "pl": "Polish",
-            "ru": "Russian"
         },
         "form": {
             "username": "Login",
@@ -41,7 +37,7 @@
         },
         "messages": {
             "info": {
-                "authenticated": "If you want to <a href=\"#/login\">authenticate</a>, you can try the default accounts:<br/>- Admnistrator (login=\"admin\" and password=\"admin\") <br/>- User (login=\"user\" and password=\"user\").",
+                "authenticated": "If you want to <a href=\"#/login\">authenticate</a>, you can try the default accounts:<br/>- Administrator (login=\"admin\" and password=\"admin\") <br/>- User (login=\"user\" and password=\"user\").",
                 "register": "You don't have an account yet? <a href=\"#/register\">Register a new account</a>"
             },
             "error": {
@@ -135,7 +131,7 @@
             "button": "Save"
         },
         "messages": {
-            "error": "<strong>An error has occured!</strong> Settings could not be saved.",
+            "error": "<strong>An error has occurred!</strong> Settings could not be saved.",
             "success": "<strong>Settings saved!</strong>",
             "validate": {
                 "firstname": {
@@ -157,7 +153,7 @@
             "button": "Save"
         },
         "messages": {
-            "error":  "<strong>An error has occured!</strong> The password could not be changed.",
+            "error":  "<strong>An error has occurred!</strong> The password could not be changed.",
             "success": "<strong>Password changed!</strong>"
         }
     },
@@ -171,7 +167,7 @@
         },
         "messages": {
             "success": "<strong>Session invalidated!</strong>",
-            "error": "<strong>An error has occured!</strong> The session could not be invalidated."
+            "error": "<strong>An error has occurred!</strong> The session could not be invalidated."
         }
     },
     "tracker": {
@@ -187,12 +183,7 @@
     "metrics": {
         "title": "Application Metrics",
         "refresh.button": "Refresh",
-        "health": {
-            "title": "Heath checks",
-            "database": "Database: ",
-            "email": "Email: ",
-            "stacktrace": "Stacktrace"
-        },
+        "updating": "Updating...",
         "jvm": {
             "title": "JVM Metrics",
             "memory": {
@@ -267,6 +258,24 @@
             "misses": "Misses",
             "evictioncount": "Eviction count",
             "mean": "Mean get time (ms)"
+        }
+    },
+    "health": {
+        "title": "Health checks",
+        "refresh.button": "Refresh",
+        "stacktrace": "Stacktrace",
+        "indicator": {
+            "db": "Database",
+            "mail": "Email",
+            "mongo": "Mongo DB"
+        },
+        "table": {
+            "service": "Service name",
+            "status": "Status"
+        },
+        "status": {
+            "UP": "UP",
+            "DOWN": "DOWN"
         }
     },
     "logs": {

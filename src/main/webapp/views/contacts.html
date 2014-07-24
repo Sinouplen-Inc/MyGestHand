@@ -1,0 +1,147 @@
+<div>
+
+	<h2>Contacts</h2>
+
+	<button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#saveContactModal" ng-click="clear()">
+		<span class="glyphicon glyphicon-flash"></span> Create a new Contact
+	</button>
+	<div class="modal fade" id="saveContactModal" tabindex="-1" role="dialog" aria-labelledby="myContactLabel"
+		 aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<form name="form" role="form" novalidate
+					  class="ng-scope ng-invalid ng-invalid-required ng-dirty ng-valid-minlength"
+					  ng-submit="create()">
+
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+								ng-click="clear()">&times;</button>
+						<h4 class="modal-title" id="myContactLabel">Create or edit a Contact</h4>
+					</div>
+					<div class="modal-body">
+						<div class="form-group">
+							<label>ID</label>
+							<input type="text" class="form-control" name="id"
+								   ng-model="contact.id" readonly>
+						</div>
+						<div class="form-group">
+							<label>Birthday</label>
+							<input type="date" class="form-control" name="birthDay"
+								   ng-model="contact.birthDay" required>
+						</div>
+
+						<div class="form-group">
+							<label>City of birth</label>
+							<input type="text" class="form-control" name="birthCity"
+								   ng-model="contact.birthCity" required>
+						</div>
+
+						<div class="form-group">
+							<label>Address</label>
+							<input type="text" class="form-control" name="address"
+								   ng-model="contact.address" required>
+						</div>
+
+						<div class="form-group">
+							<label>Postal Code</label>
+							<input type="text" class="form-control" name="postalCode"
+								   ng-model="contact.postalCode" required>
+						</div>
+
+						<div class="form-group">
+							<label>City</label>
+							<input type="text" class="form-control" name="city"
+								   ng-model="contact.city" required>
+						</div>
+
+						<div class="form-group">
+							<label>Job</label>
+							<input type="text" class="form-control" name="job"
+								   ng-model="contact.job" required>
+						</div>
+
+						<div class="form-group">
+							<label>Phone</label>
+							<input type="text" class="form-control" name="phone"
+								   ng-model="contact.phone" required>
+						</div>
+
+						<div class="form-group">
+							<label>Cell Phone</label>
+							<input type="text" class="form-control" name="cellPhone"
+								   ng-model="contact.cellPhone" required>
+						</div>
+
+						<div class="form-group">
+							<label>Job Phone</label>
+							<input type="text" class="form-control" name="jobPhone"
+								   ng-model="contact.jobPhone" required>
+						</div>
+
+						<div>
+							<label>Licenciate</label>
+							<input type="checkbox" class="form-control" name="licenciate"
+								   ng-model="choice.licenciate" required/>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal" ng-click="clear()">
+							<span class="glyphicon glyphicon-ban-circle"></span> Cancel
+						</button>
+						<button type="submit" ng-disabled="form.$invalid" class="btn btn-primary">
+							<span class="glyphicon glyphicon-save"></span> Save
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<div class="table-responsive">
+		<table class="table table-striped">
+			<thead>
+			<tr>
+				<th>ID</th>
+				<th>Birthday</th>
+				<th>City of birth</th>
+				<th>Address</th>
+				<th>Postal code</th>
+				<th>City</th>
+				<th>Job</th>
+				<th>Phone</th>
+				<th>Cellphone</th>
+				<th>Job phone</th>
+				<th>Licenciate</th>
+				<th></th>
+			</tr>
+			</thead>
+			<tbody>
+			<tr ng-repeat="contact in contacts">
+				<td>{{contact.id}}</td>
+				<td>{{contact.birthDay}}</td>
+				<td>{{contact.birthCity}}</td>
+				<td>{{contact.address}}</td>
+				<td>{{contact.postalCode}}</td>
+				<td>{{contact.city}}</td>
+				<td>{{contact.job}}</td>
+				<td>{{contact.phone}}</td>
+				<td>{{contact.cellPhone}}</td>
+				<td>{{contact.jobPhone}}</td>
+				<td>{{contact.licenciate}}</td>
+				<td>
+					<button type="submit"
+							ng-click="update(contact.id)"
+							class="btn">
+						<span class="glyphicon glyphicon-pencil"></span> Edit
+					</button>
+					<button type="submit"
+							ng-click="delete(contact.id)"
+							class="btn btn-danger">
+						<span class="glyphicon glyphicon-remove-circle"></span> Delete
+					</button>
+				</td>
+			</tr>
+			</tbody>
+		</table>
+	</div>
+</div>

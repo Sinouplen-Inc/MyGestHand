@@ -22,13 +22,12 @@ spring:
         protocol: smtp
         tls: false
         auth: false
+        from: MyGestHand-JHipster@localhost
 
     messageSource:
         cacheSeconds: 1
 
-
 swagger:
-    apiDocsLocation: http://localhost:8080
     title: MyGestHand-JHipster API
     description: MyGestHand-JHipster applications and beyond!
     termsOfServiceUrl: http://jhipster.github.io/

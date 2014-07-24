@@ -1,15 +1,18 @@
 package org.sinouplen.inc.mygesthand.config;
 
+import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import liquibase.integration.spring.SpringLiquibase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingClass;
 import org.springframework.boot.bind.RelaxedPropertyResolver;
 import org.springframework.context.ApplicationContextException;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -22,8 +25,8 @@ import java.util.List;
 
 @Configuration
 @EnableJpaRepositories("org.sinouplen.inc.mygesthand.repository")
-@EnableTransactionManagement
 @EnableJpaAuditing(auditorAwareRef = "springSecurityAuditorAware")
+@EnableTransactionManagement
 public class DatabaseConfiguration implements EnvironmentAware {
 
     private final Logger log = LoggerFactory.getLogger(DatabaseConfiguration.class);
@@ -38,7 +41,9 @@ public class DatabaseConfiguration implements EnvironmentAware {
         this.propertyResolver = new RelaxedPropertyResolver(environment, "spring.datasource.");
     }
 
-    @Bean
+    @Bean(destroyMethod = "shutdown")
+    @ConditionalOnMissingClass(name = "org.sinouplen.inc.mygesthand.config.HerokuDatabaseConfiguration")
+    @Profile("!cloud")
     public DataSource dataSource() {
         log.debug("Configuring Datasource");
         if (propertyResolver.getProperty("url") == null && propertyResolver.getProperty("databaseName") == null) {
@@ -58,24 +63,29 @@ public class DatabaseConfiguration implements EnvironmentAware {
         }
         config.addDataSourceProperty("user", propertyResolver.getProperty("username"));
         config.addDataSourceProperty("password", propertyResolver.getProperty("password"));
+
+        //MySQL optimizations, see https://github.com/brettwooldridge/HikariCP/wiki/MySQL-Configuration
+        if ("com.mysql.jdbc.jdbc2.optional.MysqlDataSource".equals(propertyResolver.getProperty("dataSourceClassName"))) {
+            config.addDataSourceProperty("cachePrepStmts", propertyResolver.getProperty("cachePrepStmts", "true"));
+            config.addDataSourceProperty("prepStmtCacheSize", propertyResolver.getProperty("prepStmtCacheSize", "250"));
+            config.addDataSourceProperty("prepStmtCacheSqlLimit", propertyResolver.getProperty("prepStmtCacheSqlLimit", "2048"));
+            config.addDataSourceProperty("useServerPrepStmts", propertyResolver.getProperty("useServerPrepStmts", "true"));
+        }
         return new HikariDataSource(config);
     }
 
-    @Bean(name = {"org.springframework.boot.autoconfigure.AutoConfigurationUtils.basePackages"})
-    public List<String> getBasePackages() {
-        List<String> basePackages = new ArrayList<>();
-        basePackages.add("org.sinouplen.inc.mygesthand.domain");
-        return basePackages;
-    }
-
     @Bean
-    public SpringLiquibase liquibase() {
+    public SpringLiquibase liquibase(DataSource dataSource) {
         log.debug("Configuring Liquibase");
         SpringLiquibase liquibase = new SpringLiquibase();
-        liquibase.setDataSource(dataSource());
+        liquibase.setDataSource(dataSource);
         liquibase.setChangeLog("classpath:config/liquibase/master.xml");
         liquibase.setContexts("development, production");
         return liquibase;
     }
-}
 
+    @Bean
+    public Hibernate4Module hibernate4Module() {
+        return new Hibernate4Module();
+    }
+}

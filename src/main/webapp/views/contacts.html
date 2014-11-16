@@ -1,0 +1,323 @@
+<div>
+
+    <h2>Contacts</h2>
+
+    <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#saveContactModal" ng-click="clear()">
+        <span class="glyphicon glyphicon-flash"></span> Create a new Contact
+    </button>
+    <div class="modal fade" id="saveContactModal" tabindex="-1" role="dialog" aria-labelledby="myContactLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form name="form" role="form" novalidate
+                      class="ng-scope ng-invalid ng-invalid-required ng-dirty ng-valid-minlength"
+                      ng-submit="create()">
+
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                                ng-click="clear()">&times;</button>
+                        <h4 class="modal-title" id="myContactLabel">Create or edit a Contact</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>ID</label>
+                            <input type="text" class="form-control" name="id"
+                                   ng-model="contact.id" readonly>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Birthday</label>
+                            <input type="datetime-local" class="form-control"
+                                   ng-model="contact.birthday">
+                        </div>
+                        <div class="form-group">
+                            <label>Nationality</label>
+                            <input type="text" class="form-control"
+                                   ng-model="contact.nationality">
+                        </div>
+                        <div class="form-group">
+                            <label>Birth_country</label>
+                            <input type="text" class="form-control"
+                                   ng-model="contact.birth_country">
+                        </div>
+                        <div class="form-group">
+                            <label>Quality</label>
+                            <input type="text" class="form-control"
+                                   ng-model="contact.quality">
+                        </div>
+                        <div class="form-group">
+                            <label>Age_range</label>
+                            <input type="text" class="form-control"
+                                   ng-model="contact.age_range">
+                        </div>
+                        <div class="form-group">
+                            <label>Mutation_indicator</label>
+                            <input type="text" class="form-control"
+                                   ng-model="contact.mutation_indicator">
+                        </div>
+                        <div class="form-group">
+                            <label>Nationality_nature</label>
+                            <input type="text" class="form-control"
+                                   ng-model="contact.nationality_nature">
+                        </div>
+                        <div class="form-group">
+                            <label>Date_of_entry</label>
+                            <input type="datetime-local" class="form-control"
+                                   ng-model="contact.date_of_entry">
+                        </div>
+                        <div class="form-group">
+                            <label>Date_of_recipt</label>
+                            <input type="checkbox" class="form-control"
+                                   ng-model="contact.date_of_recipt">
+                        </div>
+                        <div class="form-group">
+                            <label>Date_of_expiry</label>
+                            <input type="datetime-local" class="form-control"
+                                   ng-model="contact.date_of_expiry">
+                        </div>
+                        <div class="form-group">
+                            <label>Date_of_qualification</label>
+                            <input type="datetime-local" class="form-control"
+                                   ng-model="contact.date_of_qualification">
+                        </div>
+                        <div class="form-group">
+                            <label>License_status</label>
+                            <input type="text" class="form-control"
+                                   ng-model="contact.license_status">
+                        </div>
+                        <div class="form-group">
+                            <label>Type_of_application</label>
+                            <input type="text" class="form-control"
+                                   ng-model="contact.type_of_application">
+                        </div>
+                        <div class="form-group">
+                            <label>License_number</label>
+                            <input type="text" class="form-control"
+                                   ng-model="contact.license_number">
+                        </div>
+                        <div class="form-group">
+                            <label>Sex</label>
+                            <input type="text" class="form-control"
+                                   ng-model="contact.sex">
+                        </div>
+                        <div class="form-group">
+                            <label>Individual_accident_insurance</label>
+                            <input type="checkbox" class="form-control"
+                                   ng-model="contact.individual_accident_insurance">
+                        </div>
+                        <div class="form-group">
+                            <label>Allows_trade_eamil</label>
+                            <input type="checkbox" class="form-control"
+                                   ng-model="contact.allows_trade_eamil">
+                        </div>
+                        <div class="form-group">
+                            <label>Allows_address</label>
+                            <input type="checkbox" class="form-control"
+                                   ng-model="contact.allows_address">
+                        </div>
+                        <div class="form-group">
+                            <label>Civility</label>
+                            <input type="text" class="form-control"
+                                   ng-model="contact.civility">
+                        </div>
+                        <div class="form-group">
+                            <label>Married_name</label>
+                            <input type="text" class="form-control"
+                                   ng-model="contact.married_name">
+                        </div>
+                        <div class="form-group">
+                            <label>Foreign_birth_city</label>
+                            <input type="text" class="form-control"
+                                   ng-model="contact.foreign_birth_city">
+                        </div>
+                        <div class="form-group">
+                            <label>French_birth_city</label>
+                            <input type="text" class="form-control"
+                                   ng-model="contact.french_birth_city">
+                        </div>
+                        <div class="form-group">
+                            <label>Departement_birth</label>
+                            <input type="text" class="form-control"
+                                   ng-model="contact.departement_birth">
+                        </div>
+                        <div class="form-group">
+                            <label>Address_1</label>
+                            <input type="text" class="form-control"
+                                   ng-model="contact.address_1">
+                        </div>
+                        <div class="form-group">
+                            <label>Address_2</label>
+                            <input type="text" class="form-control"
+                                   ng-model="contact.address_2">
+                        </div>
+                        <div class="form-group">
+                            <label>Address_3</label>
+                            <input type="text" class="form-control"
+                                   ng-model="contact.address_3">
+                        </div>
+                        <div class="form-group">
+                            <label>French_postal_code</label>
+                            <input type="text" class="form-control"
+                                   ng-model="contact.french_postal_code">
+                        </div>
+                        <div class="form-group">
+                            <label>French_city</label>
+                            <input type="text" class="form-control"
+                                   ng-model="contact.french_city">
+                        </div>
+                        <div class="form-group">
+                            <label>Foreign_postal_code</label>
+                            <input type="text" class="form-control"
+                                   ng-model="contact.foreign_postal_code">
+                        </div>
+                        <div class="form-group">
+                            <label>Foreign_city</label>
+                            <input type="text" class="form-control"
+                                   ng-model="contact.foreign_city">
+                        </div>
+                        <div class="form-group">
+                            <label>Country</label>
+                            <input type="text" class="form-control"
+                                   ng-model="contact.country">
+                        </div>
+                        <div class="form-group">
+                            <label>Home_phone_number</label>
+                            <input type="text" class="form-control"
+                                   ng-model="contact.home_phone_number">
+                        </div>
+                        <div class="form-group">
+                            <label>Cellular_phone_number</label>
+                            <input type="text" class="form-control"
+                                   ng-model="contact.cellular_phone_number">
+                        </div>
+                        <div class="form-group">
+                            <label>Work_phone_number</label>
+                            <input type="text" class="form-control"
+                                   ng-model="contact.work_phone_number">
+                        </div>
+                        <div class="form-group">
+                            <label>Fax_number</label>
+                            <input type="text" class="form-control"
+                                   ng-model="contact.fax_number">
+                        </div>
+                        <div class="form-group">
+                            <label>License_status_date</label>
+                            <input type="datetime-local" class="form-control"
+                                   ng-model="contact.license_status_date">
+                        </div>
+
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="clear()">
+                            <span class="glyphicon glyphicon-ban-circle"></span> Cancel
+                        </button>
+                        <button type="submit" ng-disabled="form.$invalid" class="btn btn-primary">
+                            <span class="glyphicon glyphicon-save"></span> Save
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Birthday</th>
+                <th>Nationality</th>
+                <th>Birth_country</th>
+                <th>Quality</th>
+                <th>Age_range</th>
+                <th>Mutation_indicator</th>
+                <th>Nationality_nature</th>
+                <th>Date_of_entry</th>
+                <th>Date_of_recipt</th>
+                <th>Date_of_expiry</th>
+                <th>Date_of_qualification</th>
+                <th>License_status</th>
+                <th>Type_of_application</th>
+                <th>License_number</th>
+                <th>Sex</th>
+                <th>Individual_accident_insurance</th>
+                <th>Allows_trade_eamil</th>
+                <th>Allows_address</th>
+                <th>Civility</th>
+                <th>Married_name</th>
+                <th>Foreign_birth_city</th>
+                <th>French_birth_city</th>
+                <th>Departement_birth</th>
+                <th>Address_1</th>
+                <th>Address_2</th>
+                <th>Address_3</th>
+                <th>French_postal_code</th>
+                <th>French_city</th>
+                <th>Foreign_postal_code</th>
+                <th>Foreign_city</th>
+                <th>Country</th>
+                <th>Home_phone_number</th>
+                <th>Cellular_phone_number</th>
+                <th>Work_phone_number</th>
+                <th>Fax_number</th>
+                <th>License_status_date</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="contact in contacts">
+                <td>{{contact.id}}</td>
+                <td>{{contact.birthday}}</td>
+                <td>{{contact.nationality}}</td>
+                <td>{{contact.birth_country}}</td>
+                <td>{{contact.quality}}</td>
+                <td>{{contact.age_range}}</td>
+                <td>{{contact.mutation_indicator}}</td>
+                <td>{{contact.nationality_nature}}</td>
+                <td>{{contact.date_of_entry}}</td>
+                <td>{{contact.date_of_recipt}}</td>
+                <td>{{contact.date_of_expiry}}</td>
+                <td>{{contact.date_of_qualification}}</td>
+                <td>{{contact.license_status}}</td>
+                <td>{{contact.type_of_application}}</td>
+                <td>{{contact.license_number}}</td>
+                <td>{{contact.sex}}</td>
+                <td>{{contact.individual_accident_insurance}}</td>
+                <td>{{contact.allows_trade_eamil}}</td>
+                <td>{{contact.allows_address}}</td>
+                <td>{{contact.civility}}</td>
+                <td>{{contact.married_name}}</td>
+                <td>{{contact.foreign_birth_city}}</td>
+                <td>{{contact.french_birth_city}}</td>
+                <td>{{contact.departement_birth}}</td>
+                <td>{{contact.address_1}}</td>
+                <td>{{contact.address_2}}</td>
+                <td>{{contact.address_3}}</td>
+                <td>{{contact.french_postal_code}}</td>
+                <td>{{contact.french_city}}</td>
+                <td>{{contact.foreign_postal_code}}</td>
+                <td>{{contact.foreign_city}}</td>
+                <td>{{contact.country}}</td>
+                <td>{{contact.home_phone_number}}</td>
+                <td>{{contact.cellular_phone_number}}</td>
+                <td>{{contact.work_phone_number}}</td>
+                <td>{{contact.fax_number}}</td>
+                <td>{{contact.license_status_date}}</td>
+                <td>
+                    <button type="submit"
+                            ng-click="update(contact.id)"
+                            class="btn btn-default">
+                        <span class="glyphicon glyphicon-pencil"></span> Edit
+                    </button>
+                    <button type="submit"
+                            ng-click="delete(contact.id)"
+                            class="btn btn-danger">
+                        <span class="glyphicon glyphicon-remove-circle"></span> Delete
+                    </button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

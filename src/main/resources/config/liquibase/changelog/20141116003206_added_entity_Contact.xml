@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <property name="now" value="now()" dbms="mysql,h2"/>
+    <property name="now" value="current_timestamp" dbms="postgresql"/>
+
+    <!--
+        Added the entity Contact.
+    -->
+    <changeSet id="20141116003206" author="jhipster">
+        <createTable tableName="T_CONTACT">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="birthday" type="timestamp"/>
+            <column name="nationality" type="varchar(255)"/>
+            <column name="birth_country" type="varchar(255)"/>
+            <column name="quality" type="varchar(255)"/>
+            <column name="age_range" type="varchar(255)"/>
+            <column name="mutation_indicator" type="varchar(255)"/>
+            <column name="nationality_nature" type="varchar(255)"/>
+            <column name="date_of_entry" type="timestamp"/>
+            <column name="date_of_recipt" type="timestamp"/>
+            <column name="date_of_expiry" type="timestamp"/>
+            <column name="date_of_qualification" type="timestamp"/>
+            <column name="license_status" type="varchar(255)"/>
+            <column name="type_of_application" type="varchar(255)"/>
+            <column name="license_number" type="varchar(255)"/>
+            <column name="sex" type="varchar(255)"/>
+            <column name="individual_accident_insurance" type="bit"/>
+            <column name="allows_trade_eamil" type="bit"/>
+            <column name="allows_address" type="bit"/>
+            <column name="civility" type="varchar(255)"/>
+            <column name="married_name" type="varchar(255)"/>
+            <column name="foreign_birth_city" type="varchar(255)"/>
+            <column name="french_birth_city" type="varchar(255)"/>
+            <column name="departement_birth" type="varchar(255)"/>
+            <column name="address_1" type="varchar(255)"/>
+            <column name="address_2" type="varchar(255)"/>
+            <column name="address_3" type="varchar(255)"/>
+            <column name="french_postal_code" type="varchar(255)"/>
+            <column name="french_city" type="varchar(255)"/>
+            <column name="foreign_postal_code" type="varchar(255)"/>
+            <column name="foreign_city" type="varchar(255)"/>
+            <column name="country" type="varchar(255)"/>
+            <column name="home_phone_number" type="varchar(255)"/>
+            <column name="cellular_phone_number" type="varchar(255)"/>
+            <column name="work_phone_number" type="varchar(255)"/>
+            <column name="fax_number" type="varchar(255)"/>
+            <column name="license_status_date" type="timestamp"/>
+            <column name="user_login" type="varchar(50)"/>
+        </createTable>
+
+        <addForeignKeyConstraint baseColumnNames="id"
+                                 baseTableName="T_CONTACT"
+                                 constraintName="fk_contact_user_login"
+                                 referencedColumnNames="login"
+                                 referencedTableName="T_USER"/>
+    </changeSet>
+</databaseChangeLog>

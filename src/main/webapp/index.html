@@ -50,8 +50,6 @@
                                 </span>
                             </a>
                             <ul class="dropdown-menu" ng-controller="MenuController">
-                                <li ng-switch-when="true"><a href="#/contact"><span
-                                    class="glyphicon glyphicon-asterisk"></span>&nbsp;contact</a></li>
                                 <!-- JHipster will add entities to the menu here -->
                             </ul>
                         </li>
@@ -94,6 +92,9 @@
                                     &nbsp;<span translate="global.menu.account.metrics">Metrics</span></a></li>
                                 <li><a href="#/health"><span class="glyphicon glyphicon-heart"></span>
                                     &#xA0;<span translate="global.menu.account.health">Health</span></a></li>
+                                <li><a href="#/configuration"><span class="glyphicon glyphicon-list-alt"></span>
+                                    &#xA0;<span translate="global.menu.account.configuration">Configuration</span></a>
+                                </li>
                                 <li><a href="#/audits"><span class="glyphicon glyphicon-bell"></span>
                                     &nbsp;<span translate="global.menu.account.audits">Audits</span></a></li>
                                 <li><a href="#/logs"><span class="glyphicon glyphicon-tasks"></span>
@@ -171,9 +172,6 @@
         <script src="bower_components/bootstrap-sass/vendor/assets/javascripts/bootstrap/scrollspy.js"></script>
         <script src="bower_components/bootstrap-sass/vendor/assets/javascripts/bootstrap/collapse.js"></script>
         <script src="bower_components/bootstrap-sass/vendor/assets/javascripts/bootstrap/tab.js"></script>
-        <script src="scripts/contact/router_contact.js"></script>
-        <script src="scripts/contact/controller_contact.js"></script>
-        <script src="scripts/contact/service_contact.js"></script>
         <!-- endbuild -->
 </body>
 </html>

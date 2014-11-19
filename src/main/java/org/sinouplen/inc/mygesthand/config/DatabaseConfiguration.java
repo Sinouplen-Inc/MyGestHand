@@ -1,5 +1,6 @@
 package org.sinouplen.inc.mygesthand.config;
 
+import com.codahale.metrics.MetricRegistry;
 import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -19,9 +20,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 @Configuration
 @EnableJpaRepositories("org.sinouplen.inc.mygesthand.repository")
@@ -44,7 +43,7 @@ public class DatabaseConfiguration implements EnvironmentAware {
     @Bean(destroyMethod = "shutdown")
     @ConditionalOnMissingClass(name = "org.sinouplen.inc.mygesthand.config.HerokuDatabaseConfiguration")
     @Profile("!cloud")
-    public DataSource dataSource() {
+    public DataSource dataSource(MetricRegistry metricRegistry) {
         log.debug("Configuring Datasource");
         if (propertyResolver.getProperty("url") == null && propertyResolver.getProperty("databaseName") == null) {
             log.error("Your database connection pool configuration is incorrect! The application" +
@@ -71,6 +70,7 @@ public class DatabaseConfiguration implements EnvironmentAware {
             config.addDataSourceProperty("prepStmtCacheSqlLimit", propertyResolver.getProperty("prepStmtCacheSqlLimit", "2048"));
             config.addDataSourceProperty("useServerPrepStmts", propertyResolver.getProperty("useServerPrepStmts", "true"));
         }
+        config.setMetricRegistry(metricRegistry);
         return new HikariDataSource(config);
     }
 

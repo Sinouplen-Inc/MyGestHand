@@ -1,6 +1,7 @@
 package org.sinouplen.inc.mygesthand.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import org.apache.commons.lang.StringUtils;
 import org.sinouplen.inc.mygesthand.domain.Authority;
 import org.sinouplen.inc.mygesthand.domain.PersistentToken;
 import org.sinouplen.inc.mygesthand.domain.User;
@@ -10,7 +11,6 @@ import org.sinouplen.inc.mygesthand.security.SecurityUtils;
 import org.sinouplen.inc.mygesthand.service.MailService;
 import org.sinouplen.inc.mygesthand.service.UserService;
 import org.sinouplen.inc.mygesthand.web.rest.dto.UserDTO;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -71,8 +71,11 @@ public class AccountResource {
     public ResponseEntity<?> registerAccount(@RequestBody UserDTO userDTO, HttpServletRequest request,
                                              HttpServletResponse response) {
         return Optional.ofNullable(userRepository.findOne(userDTO.getLogin()))
-            .map(user -> new ResponseEntity<>(HttpStatus.NOT_MODIFIED))
+            .map(user -> new ResponseEntity<String>("login already in use", HttpStatus.BAD_REQUEST))
             .orElseGet(() -> {
+                if (userRepository.findOneByEmail(userDTO.getEmail()) != null) {
+                    return new ResponseEntity<String>("e-mail address already in use", HttpStatus.BAD_REQUEST);
+                }
                 User user = userService.createUserInformation(userDTO.getLogin(), userDTO.getPassword(),
                         userDTO.getFirstName(), userDTO.getLastName(), userDTO.getEmail().toLowerCase(),
                         userDTO.getLangKey());
@@ -137,8 +140,13 @@ public class AccountResource {
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public void saveAccount(@RequestBody UserDTO userDTO) {
+    public ResponseEntity<?> saveAccount(@RequestBody UserDTO userDTO) {
+        User userHavingThisEmail = userRepository.findOneByEmail(userDTO.getEmail());
+        if (userHavingThisEmail != null && !userHavingThisEmail.getLogin().equals(SecurityUtils.getCurrentLogin())) {
+            return new ResponseEntity<String>("e-mail address already in use", HttpStatus.BAD_REQUEST);
+        }
         userService.updateUserInformation(userDTO.getFirstName(), userDTO.getLastName(), userDTO.getEmail());
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     /**

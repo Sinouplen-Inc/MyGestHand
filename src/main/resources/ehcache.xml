@@ -36,9 +36,4 @@
     <cache name="org.sinouplen.inc.mygesthand.domain.User.persistentTokens"
            timeToLiveSeconds="3600">
     </cache>
-
-    <cache name="org.sinouplen.inc.mygesthand.domain.PersistentAuditEvent"
-           timeToLiveSeconds="3600">
-    </cache>
 </ehcache>
-

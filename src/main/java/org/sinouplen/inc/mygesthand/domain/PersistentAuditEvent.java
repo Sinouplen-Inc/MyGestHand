@@ -1,9 +1,8 @@
 package org.sinouplen.inc.mygesthand.domain;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Type;
 import org.joda.time.LocalDateTime;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.HashMap;
@@ -16,7 +15,6 @@ import java.util.Map;
 
 @Entity
 @Table(name = "T_PERSISTENT_AUDIT_EVENT")
-@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class PersistentAuditEvent  {
 
     @Id
@@ -31,7 +29,7 @@ public class PersistentAuditEvent  {
     @Column(name = "event_date")
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDateTime")
     private LocalDateTime auditEventDate;
-    
+
     @Column(name = "event_type")
     private String auditEventType;
 

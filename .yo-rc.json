@@ -12,7 +12,7 @@
     "prodDatabaseType": "mysql",
     "useCompass": false,
     "buildTool": "maven",
-    "frontendBuilder": "gulp",
+    "frontendBuilder": "grunt",
     "javaVersion": "8"
   }
 }

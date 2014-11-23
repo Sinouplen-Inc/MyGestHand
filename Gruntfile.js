@@ -1,4 +1,4 @@
-// Generated on 2014-11-20 using generator-jhipster 1.9.0
+// Generated on 2014-11-23 using generator-jhipster 1.9.0
 'use strict';
 
 var proxySnippet = require('grunt-connect-proxy/lib/utils').proxyRequest;
